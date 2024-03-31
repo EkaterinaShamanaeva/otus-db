@@ -24,17 +24,17 @@ psql -h localhost -p 54323 -U postgres -d postgres
 Затем вводим пароль `qwerty`.
 При успешном выполнении должна появиться командная строка postgres.
 
-![Консоль psql](images/psql.png)
+![Консоль psql](images/psql.PNG)
 
 Для подключения в pgAdmin необходимо создать сервер:
 
-![Создание сервера в pgAdmin](images/pg_admin_server.png)
+![Создание сервера в pgAdmin](images/pg_admin_server.PNG)
 
-![Настройки соединения в pgAdmin](images/pg_admin_conn.png)
+![Настройки соединения в pgAdmin](images/pg_admin_conn.PNG)
 
 При успешном выполнении появится активный сервер и БД:
 
-![Настройки соединения в pgAdmin](images/pg_admin_db.png)
+![Настройки соединения в pgAdmin](images/pg_admin_db.PNG)
 
 ### Остановка контейнера
 ```commandline
