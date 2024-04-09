@@ -30,33 +30,33 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA engines TO engineer
 -- Создание таблиц
 CREATE TABLE aircraft.aircraft_manufacturers (
   id integer PRIMARY KEY,
-  manufacturer varchar
+  manufacturer varchar NOT NULL
 );
 
 CREATE TABLE aircraft.aircraft_families (
   id integer PRIMARY KEY,
-  family varchar,
+  family varchar NOT NULL,
   manufacturer_id integer
 );
 ALTER TABLE aircraft.aircraft_families ADD FOREIGN KEY (manufacturer_id) REFERENCES aircraft.aircraft_manufacturers (id);
 
 CREATE TABLE aircraft.aircraft_types (
   id integer PRIMARY KEY,
-  type varchar,
-  code varchar,
+  type varchar NOT NULL,
+  code varchar NOT NULL,
   family_id integer
 );
 ALTER TABLE aircraft.aircraft_types ADD FOREIGN KEY (family_id) REFERENCES aircraft.aircraft_families (id);
 
 CREATE TABLE aircraft.aircraft_owners (
   id integer PRIMARY KEY,
-  owner varchar
+  owner varchar NOT NULL
 );
 
 CREATE TABLE aircraft.aircraft (
   id integer PRIMARY KEY,
   type_id integer,
-  reg_num varchar,
+  reg_num NOT NULL UNIQUE,
   owner_id integer
 );
 ALTER TABLE aircraft.aircraft ADD FOREIGN KEY (type_id) REFERENCES aircraft.aircraft_types (id);
@@ -64,9 +64,9 @@ ALTER TABLE aircraft.aircraft ADD FOREIGN KEY (owner_id) REFERENCES aircraft.air
 
 CREATE TABLE aircraft.flights (
   id integer PRIMARY KEY,
-  code integer,
-  dep varchar,
-  arr varchar,
+  code integer NOT NULL,
+  dep varchar NOT NULL,
+  arr varchar NOT NULL,
   owner_id integer
 );
 ALTER TABLE aircraft.flights ADD FOREIGN KEY (owner_id) REFERENCES aircraft.aircraft_owners (id);
@@ -74,10 +74,10 @@ ALTER TABLE aircraft.flights ADD FOREIGN KEY (owner_id) REFERENCES aircraft.airc
 CREATE TABLE aircraft.flights_history (
   id integer PRIMARY KEY,
   ac_id integer,
-  flt_date date,
+  flt_date date NOT NULL,
   flt_id integer,
-  atd timestamp,
-  tdown timestamp,
+  atd timestamp NOT NULL,
+  tdown timestamp NOT NULL,
   acms_path varchar,
   qar_path varchar
 );
@@ -86,28 +86,34 @@ ALTER TABLE aircraft.flights_history ADD FOREIGN KEY (flt_id) REFERENCES aircraf
 
 CREATE TABLE engines.engine_manufacturers (
   id integer PRIMARY KEY,
-  manufacturer varchar
+  manufacturer varchar NOT NULL
 );
 
 CREATE TABLE engines.engine_families (
   id integer PRIMARY KEY,
-  family varchar,
+  family varchar NOT NULL,
   manufacturer_id integer
 );
 ALTER TABLE engines.engine_families ADD FOREIGN KEY (manufacturer_id) REFERENCES engines.engine_manufacturers (id);
 
+CREATE TABLE engines.engine_statuses (
+  id integer PRIMARY KEY,
+  status varchar NOT NULL
+);
+
 CREATE TABLE engines.engines (
   id integer PRIMARY KEY,
   family_id integer,
-  part_num varchar,
-  serial_num varchar,
-  status varchar
+  part_num varchar NOT NULL,
+  serial_num varchar NOT NULL,
+  status_id integer
 );
 ALTER TABLE engines.engines ADD FOREIGN KEY (family_id) REFERENCES engines.engine_families (id);
+ALTER TABLE engines.engines ADD FOREIGN KEY (status_id) REFERENCES engines.engine_statuses (id);
 
 CREATE TABLE engines.install_positions (
   id integer PRIMARY KEY,
-  pos varchar
+  pos varchar NOT NULL
 );
 
 CREATE TABLE engines.engine_positions (
@@ -115,26 +121,26 @@ CREATE TABLE engines.engine_positions (
   engine_id integer,
   ac_id integer,
   pos_id integer,
-  install_dt timestamp,
+  install_dt timestamp NOT NULL,
   remove_dt timestamp
 );
 ALTER TABLE engines.engine_positions ADD FOREIGN KEY (engine_id) REFERENCES engines.engines (id);
 ALTER TABLE engines.engine_positions ADD FOREIGN KEY (ac_id) REFERENCES aircraft.aircraft (id);
 ALTER TABLE engines.engine_positions ADD FOREIGN KEY (pos_id) REFERENCES engines.install_positions (id);
 
+CREATE TABLE engines.engine_maintenance_codes (
+  id integer PRIMARY KEY,
+  code varchar NOT NULL,
+  description varchar
+);
+
 CREATE TABLE engines.engine_maintenances (
   id integer PRIMARY KEY,
   engine_id integer,
   code_id integer,
-  maint_dt timestamp,
+  maint_dt timestamp NOT NULL,
   reason varchar,
   remarks varchar
 );
 ALTER TABLE engines.engine_maintenances ADD FOREIGN KEY (engine_id) REFERENCES engines.engines (id);
-
-CREATE TABLE engines.engine_maintenance_codes (
-  id integer PRIMARY KEY,
-  code varchar,
-  description varchar
-);
 ALTER TABLE engines.engine_maintenances ADD FOREIGN KEY (code_id) REFERENCES engines.engine_maintenance_codes (id);
