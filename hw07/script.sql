@@ -52,4 +52,4 @@ points_in_previous_year AS (
         LAG(sum_points) OVER(ORDER BY year_game) AS sum_points_previous_year
     FROM points_by_years
 )
-SELECT * FROM points_in_previous_year;
+SELECT * FROM points_in_previous_year ORDER BY year_game;
