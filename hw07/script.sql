@@ -38,10 +38,18 @@ WITH points_by_years AS (
 SELECT * FROM points_by_years ORDER BY year_game;
 
 -- Запрос с LAG
-SELECT
-    player_name,
-    year_game,
-    points,
-    LAG(points) OVER (PARTITION BY player_name ORDER BY year_game) AS prev_year_points
-FROM statistic
-ORDER BY player_name, year_game;
+WITH points_by_years AS (
+    SELECT
+        year_game,
+        SUM(points) AS sum_points
+    FROM statistic
+    GROUP BY year_game
+),
+points_in_previous_year AS (
+    SELECT
+        year_game,
+        sum_points,
+        LAG(sum_points) OVER(ORDER BY year_game) AS sum_points_previous_year
+    FROM points_by_years
+)
+SELECT * FROM points_in_previous_year;
